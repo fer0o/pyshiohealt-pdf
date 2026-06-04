@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@media print {
+  @page {
+    margin: 0;
+    size: letter;
+  }
+
+  body {
+    background: #ffffff;
+  }
+}
