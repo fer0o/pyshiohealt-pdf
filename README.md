@@ -1,73 +1,83 @@
-# React + TypeScript + Vite
+# Pyshio Health PDF
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación web en React para construir una bitácora de tratamiento de Physio Health y preparar una vista tipo hoja para impresión o futura exportación a PDF.
 
-Currently, two official plugins are available:
+## Objetivo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+El proyecto busca permitir que un usuario capture sesiones de tratamiento y genere una hoja final similar al PDF base `bitacoraa.pdf`.
 
-## React Compiler
+Por ahora el foco está en la maqueta y la lógica base. La generación final de PDF todavía no está implementada.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Stack
 
-## Expanding the ESLint configuration
+- Vite
+- React
+- TypeScript
+- Tailwind CSS 4
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Cómo correrlo
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+El servidor normalmente abre en:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```txt
+http://localhost:5173/
 ```
+
+## Estado Actual
+
+Ya existe una maqueta visual de la bitácora:
+
+- Hoja tipo carta centrada.
+- Placeholder de logo con borde negro.
+- Título `BITACORA DE TRATAMIENTO`.
+- Sesiones en dos columnas.
+- Firma simulada.
+- Footer con tres líneas de color y datos de contacto.
+
+También existe un control para elegir el número de sesiones:
+
+- Solo acepta números.
+- Mínimo: `0`.
+- Máximo: `10`.
+- Si son `10` sesiones, conserva la distribución del PDF base:
+  - izquierda: `1, 2, 3, 4, 5`
+  - derecha: `6, 7, 8, 9, 10`
+- Si son menos de `10`, distribuye impares a la izquierda y pares a la derecha:
+  - ejemplo con `5`: izquierda `1, 3, 5`, derecha `2, 4`
+
+## Archivos Importantes
+
+- `src/App.tsx`: punto principal de la app.
+- `src/components/TreatmentLogPreview.tsx`: hoja completa de preview.
+- `src/components/SessionCountControl.tsx`: control de número de sesiones.
+- `src/components/SessionGrid.tsx`: layout de columnas.
+- `src/components/SessionBlock.tsx`: una sesión individual.
+- `src/data/exampleSessions.ts`: datos temporales de ejemplo.
+- `src/utils/createSessions.ts`: crea la lista visible de sesiones.
+- `src/utils/sessionLayout.ts`: decide cómo repartir sesiones en columnas.
+- `MODELS.md`: contexto para otra IA o para retomar el proyecto.
+
+## Próximo Paso
+
+El siguiente paso planeado es crear el wizard de captura:
+
+1. Elegir número de sesiones.
+2. Capturar fecha y tratamientos de cada sesión.
+3. Avanzar con `Siguiente` / `Anterior`.
+4. Ver la preview final.
+5. Imprimir o exportar a PDF en una fase posterior.
+
+## Notas
+
+El PDF base de referencia está fuera del repo local actual:
+
+```txt
+/Users/fernandomedellin/Downloads/bitacoraa.pdf
+```
+
+Ese PDF se usó solo como referencia visual para la maqueta.
