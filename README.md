@@ -42,7 +42,7 @@ Ya existe una maqueta visual de la bitácora:
 La app ahora está separada en dos vistas:
 
 - Home / wizard: captura inicial y flujo de llenado.
-- Vista previa: hoja final con botones para editar o imprimir.
+- Vista previa: hoja final con botones para editar, descargar o imprimir.
 
 También hay un stepper visual:
 
@@ -56,10 +56,19 @@ El wizard ya tiene editor de sesiones:
 - Permite capturar fecha.
 - La fecha no puede ser anterior a `2000-01-01`.
 - La fecha no puede ser posterior al día actual.
-- Permite capturar cuatro tratamientos por sesión.
+- Permite seleccionar hasta cinco tratamientos por sesión.
+- Los tratamientos son dropdowns con opciones del PDF de referencia.
+- No permite repetir el mismo tratamiento dentro de una sesión.
 - Tiene navegación `Anterior` / `Siguiente`.
 - La preview usa los datos editables del estado.
 - El editor solo se activa después de confirmar el `Paso 1`.
+- Cada sesión requiere fecha y al menos un tratamiento.
+- `Siguiente` se bloquea si la sesión actual está incompleta.
+- `Vista previa` se bloquea hasta que todas las sesiones estén completas.
+- El botón `Vista previa` vive dentro del `Paso 3`.
+- El Paso 2 muestra progreso de sesiones con chips.
+- Cada chip indica si la sesión está completa o pendiente.
+- Se puede saltar a una sesión dando click en su chip.
 
 También existe un control en el wizard para elegir el número de sesiones:
 
@@ -84,14 +93,17 @@ También existe un control en el wizard para elegir el número de sesiones:
 - `src/pages/WizardPage.tsx`: vista home para capturar información.
 - `src/pages/PreviewPage.tsx`: vista de hoja final.
 - `src/components/WizardStepper.tsx`: progreso visual de pasos.
+- `src/components/SessionProgress.tsx`: progreso y navegación entre sesiones.
 - `src/components/SessionEditor.tsx`: captura de fecha y tratamientos por sesión.
 - `src/components/TreatmentLogPreview.tsx`: hoja completa de preview.
 - `src/components/SessionCountControl.tsx`: control de número de sesiones.
 - `src/components/SessionGrid.tsx`: layout de columnas.
 - `src/components/SessionBlock.tsx`: una sesión individual.
 - `src/data/exampleSessions.ts`: datos temporales de ejemplo.
+- `src/data/treatmentOptions.ts`: opciones disponibles de tratamientos.
 - `src/utils/createSessions.ts`: crea la lista visible de sesiones.
 - `src/utils/dateRules.ts`: reglas de rango para fechas de sesión.
+- `src/utils/sessionValidation.ts`: validaciones de sesiones completas.
 - `src/utils/sessionLayout.ts`: decide cómo repartir sesiones en columnas.
 - `MODELS.md`: contexto para otra IA o para retomar el proyecto.
 
@@ -99,11 +111,9 @@ También existe un control en el wizard para elegir el número de sesiones:
 
 El siguiente paso planeado es refinar el wizard de captura:
 
-1. Decidir si los tratamientos serán texto libre, dropdown o multiselect.
-2. Agregar validaciones para sesiones incompletas.
-3. Mejorar el estado visual de pasos completados.
-4. Confirmar cuándo una sesión está lista.
-5. Imprimir o exportar a PDF en una fase posterior.
+1. Confirmar cuándo una sesión está lista.
+2. Pulir la vista previa para impresión.
+3. Implementar descarga de PDF en una fase posterior.
 
 ## Notas
 

@@ -47,19 +47,26 @@ Completed:
   - wizard/home view for capture
   - preview view for the final printable sheet
 - A custom Tailwind stepper exists in `src/components/WizardStepper.tsx`.
-- `SessionEditor` exists and edits the current session date plus four treatment fields.
+- `SessionEditor` exists and edits the current session date plus five treatment fields.
+- Treatment fields are dropdowns sourced from `src/data/treatmentOptions.ts`.
+- Duplicate treatments are disabled within the same session.
 - `SessionEditor` only appears after Step 1 is confirmed.
 - Session date input uses `min=2000-01-01` and `max=today`.
 - Date values are clamped in code through `src/utils/dateRules.ts`.
+- Sessions require a date and at least one treatment.
+- `Siguiente` is disabled when the current session is incomplete.
+- Preview is disabled until all sessions are complete.
+- The `Vista previa` button lives inside Step 3 of the wizard.
+- `SessionProgress` exists and shows session chips with complete/pending/current states.
+- Clicking a session chip jumps to that session.
 - Sessions are now React state in `App`, not only derived from example data.
 
 Not completed:
 
-- Treatment dropdown/multiselect behavior.
-- Session completion validation.
 - Real session data entry.
 - Print polish.
 - PDF export.
+- The `Descargar` button exists in PreviewPage but is currently disabled.
 - Real logo.
 
 ## Visual Layout Requirements
@@ -139,6 +146,7 @@ src/App.tsx
 src/pages/WizardPage.tsx
 src/pages/PreviewPage.tsx
 src/components/WizardStepper.tsx
+src/components/SessionProgress.tsx
 src/components/SessionEditor.tsx
 src/components/SessionBlock.tsx
 src/components/SessionColumn.tsx
@@ -148,9 +156,11 @@ src/components/SignatureBlock.tsx
 src/components/TreatmentLogFooter.tsx
 src/components/TreatmentLogPreview.tsx
 src/data/exampleSessions.ts
+src/data/treatmentOptions.ts
 src/types/session.ts
 src/utils/createSessions.ts
 src/utils/dateRules.ts
+src/utils/sessionValidation.ts
 src/utils/sessionLayout.ts
 ```
 
@@ -160,10 +170,8 @@ Refine the session wizard inside `src/pages/WizardPage.tsx`.
 
 Suggested flow:
 
-1. Decide if treatments should be free text, select dropdowns, or multiselect.
-2. Add validation for incomplete sessions.
-3. Consider marking Step 1 active while editing session count and Step 2 active during session capture.
-4. Keep `PreviewPage` as the place where the final sheet is reviewed and printed.
+1. Decide whether dropdowns are enough or if a future multiselect is preferred.
+2. Keep `PreviewPage` as the place where the final sheet is reviewed and printed.
 
 Start simple:
 

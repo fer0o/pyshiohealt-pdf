@@ -3,6 +3,7 @@ import "./App.css";
 import { PreviewPage } from "./pages/PreviewPage";
 import { WizardPage } from "./pages/WizardPage";
 import { clampSessionCount, createSessions } from "./utils/createSessions";
+import { areAllSessionsComplete } from "./utils/sessionValidation";
 import type { Session } from "./types/session";
 
 type AppView = "wizard" | "preview";
@@ -30,6 +31,8 @@ function App() {
     );
   };
 
+  const canPreview = isSessionCountConfirmed && areAllSessionsComplete(sessions);
+
   if (view === "preview") {
     return (
       <PreviewPage
@@ -52,12 +55,15 @@ function App() {
         );
       }}
       onPreviewClick={() => {
-        if (isSessionCountConfirmed) {
+        if (canPreview) {
           setView("preview");
         }
       }}
       onPreviousSession={() => {
         setCurrentSessionIndex((currentIndex) => Math.max(currentIndex - 1, 0));
+      }}
+      onSelectSession={(index) => {
+        setCurrentSessionIndex(index);
       }}
       onSessionCountConfirm={() => {
         setIsSessionCountConfirmed(true);

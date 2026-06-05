@@ -1,3 +1,4 @@
+import { treatmentOptions } from "../data/treatmentOptions";
 import type { Session } from "../types/session";
 import { DEFAULT_TREATMENT_FIELDS } from "../utils/createSessions";
 import {
@@ -5,6 +6,10 @@ import {
   getTodayInputDate,
   MIN_SESSION_DATE,
 } from "../utils/dateRules";
+import {
+  getSessionValidationMessage,
+  isSessionComplete,
+} from "../utils/sessionValidation";
 
 type SessionEditorProps = {
   currentIndex: number;
@@ -24,8 +29,10 @@ export function SessionEditor({
   totalSessions,
 }: SessionEditorProps) {
   const canGoPrevious = currentIndex > 0;
-  const canGoNext = currentIndex < totalSessions - 1;
+  const isComplete = isSessionComplete(session);
+  const canGoNext = currentIndex < totalSessions - 1 && isComplete;
   const maxSessionDate = getTodayInputDate();
+  const validationMessage = getSessionValidationMessage(session);
 
   const updateTreatment = (treatmentIndex: number, value: string) => {
     const treatments = Array.from(
@@ -36,6 +43,15 @@ export function SessionEditor({
     treatments[treatmentIndex] = value;
     onSessionChange({ ...session, treatments });
   };
+
+  const isTreatmentSelectedElsewhere = (
+    treatment: string,
+    treatmentIndex: number,
+  ) =>
+    session.treatments.some(
+      (selectedTreatment, index) =>
+        index !== treatmentIndex && selectedTreatment === treatment,
+    );
 
   return (
     <div>
@@ -50,7 +66,8 @@ export function SessionEditor({
         </div>
 
         <p className="rounded-full bg-[#e8f8fc] px-3 py-1 text-xs font-bold text-[#263b70]">
-          {currentIndex + 1} de {totalSessions}
+          {isComplete ? "Completada" : "Pendiente"} · {currentIndex + 1} de{" "}
+          {totalSessions}
         </p>
       </div>
 
@@ -84,19 +101,38 @@ export function SessionEditor({
               <span className="text-xs uppercase tracking-normal text-neutral-500">
                 Tratamiento {index + 1}
               </span>
-              <input
+              <select
                 className="h-11 rounded-md border border-neutral-300 px-3 text-sm text-neutral-800 outline-none focus:border-sky-600 focus:ring-2 focus:ring-sky-100"
-                placeholder="Ej. Movilidad articular"
-                type="text"
                 value={session.treatments[index] ?? ""}
                 onChange={(event) => {
                   updateTreatment(index, event.target.value);
                 }}
-              />
+              >
+                <option value="">Seleccionar tratamiento</option>
+                {treatmentOptions.map((treatment) => (
+                  <option
+                    disabled={isTreatmentSelectedElsewhere(treatment, index)}
+                    key={treatment}
+                    value={treatment}
+                  >
+                    {treatment}
+                  </option>
+                ))}
+              </select>
             </label>
           ))}
         </div>
       </div>
+
+      {validationMessage ? (
+        <p className="mt-5 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-800">
+          {validationMessage}
+        </p>
+      ) : (
+        <p className="mt-5 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-800">
+          Esta sesión está lista.
+        </p>
+      )}
 
       <div className="mt-7 flex flex-wrap justify-between gap-3 border-t border-neutral-200 pt-5">
         <button

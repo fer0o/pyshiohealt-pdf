@@ -22,13 +22,21 @@ export function PreviewPage({ sessions, onEditClick }: PreviewPageProps) {
           <p className="text-sm text-neutral-500">{sessions.length} sesiones</p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap justify-end gap-2">
           <button
             className="h-10 rounded-md border border-neutral-300 px-4 text-sm font-bold text-neutral-700 transition hover:bg-neutral-100"
             type="button"
             onClick={onEditClick}
           >
             Editar
+          </button>
+          <button
+            className="h-10 rounded-md border border-neutral-300 px-4 text-sm font-bold text-neutral-400 disabled:cursor-not-allowed disabled:opacity-60"
+            disabled
+            type="button"
+            title="Descarga PDF pendiente de implementar"
+          >
+            Descargar
           </button>
           <button
             className="h-10 rounded-md bg-[#263b70] px-4 text-sm font-bold text-white transition hover:bg-[#1c2d58]"
