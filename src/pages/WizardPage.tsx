@@ -8,7 +8,9 @@ import { areAllSessionsComplete } from "../utils/sessionValidation";
 type WizardPageProps = {
   currentSessionIndex: number;
   isSessionCountConfirmed: boolean;
+  notice: { message: string; tone: "success" | "info" } | null;
   onCurrentSessionChange: (session: Session) => void;
+  onDismissNotice: () => void;
   onNextSession: () => void;
   onSelectSession: (index: number) => void;
   sessionCount: number;
@@ -22,7 +24,9 @@ type WizardPageProps = {
 export function WizardPage({
   currentSessionIndex,
   isSessionCountConfirmed,
+  notice,
   onCurrentSessionChange,
+  onDismissNotice,
   onNextSession,
   onSelectSession,
   onPreviousSession,
@@ -48,6 +52,25 @@ export function WizardPage({
             Crear bitácora de tratamiento
           </h1>
         </header>
+
+        {notice ? (
+          <section
+            className={`mb-6 flex items-center justify-between gap-4 rounded-lg border px-5 py-4 text-sm font-semibold shadow-sm ${
+              notice.tone === "success"
+                ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+                : "border-sky-200 bg-sky-50 text-sky-800"
+            }`}
+          >
+            <p>{notice.message}</p>
+            <button
+              className="rounded-md px-2 py-1 text-xs font-bold uppercase tracking-normal opacity-70 transition hover:opacity-100"
+              type="button"
+              onClick={onDismissNotice}
+            >
+              Cerrar
+            </button>
+          </section>
+        ) : null}
 
         <WizardStepper currentStep={currentStep} />
 

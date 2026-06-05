@@ -14,6 +14,8 @@ Por ahora el foco está en la maqueta y la lógica base. La generación final de
 - React
 - TypeScript
 - Tailwind CSS 4
+- html2canvas
+- jsPDF
 
 ## Cómo correrlo
 
@@ -43,6 +45,7 @@ La app ahora está separada en dos vistas:
 
 - Home / wizard: captura inicial y flujo de llenado.
 - Vista previa: hoja final con botones para editar, descargar o imprimir.
+- Después de descargar o cerrar impresión, la app regresa al wizard con un aviso.
 
 También hay un stepper visual:
 
@@ -104,6 +107,7 @@ También existe un control en el wizard para elegir el número de sesiones:
 - `src/utils/createSessions.ts`: crea la lista visible de sesiones.
 - `src/utils/dateRules.ts`: reglas de rango para fechas de sesión.
 - `src/utils/sessionValidation.ts`: validaciones de sesiones completas.
+- `src/utils/downloadPreviewPdf.ts`: descarga demo de PDF capturando la hoja HTML.
 - `src/utils/sessionLayout.ts`: decide cómo repartir sesiones en columnas.
 - `MODELS.md`: contexto para otra IA o para retomar el proyecto.
 
@@ -113,7 +117,7 @@ El siguiente paso planeado es refinar el wizard de captura:
 
 1. Confirmar cuándo una sesión está lista.
 2. Pulir la vista previa para impresión.
-3. Implementar descarga de PDF en una fase posterior.
+3. Evaluar si la descarga demo por captura HTML es suficiente o si se migra a `pdf-lib` para un PDF profesional.
 
 ## Notas
 
@@ -124,3 +128,5 @@ El PDF base de referencia está fuera del repo local actual:
 ```
 
 Ese PDF se usó solo como referencia visual para la maqueta.
+
+La descarga actual de PDF es una implementación demo basada en capturar solo la hoja blanca con `html2canvas` y generar el archivo con `jsPDF`. No captura stepper, botones ni fondo gris.

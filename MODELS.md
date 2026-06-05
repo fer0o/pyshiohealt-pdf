@@ -12,7 +12,7 @@ The desired final output is a printable page similar to the reference PDF:
 /Users/fernandomedellin/Downloads/bitacoraa.pdf
 ```
 
-The current work is intentionally focused on layout and app flow. PDF generation has not started yet.
+The current work is intentionally focused on layout and app flow. PDF download currently exists as a demo implementation using `html2canvas` and `jsPDF`; professional coordinate-based PDF generation has not started yet.
 
 ## Product Goal
 
@@ -57,6 +57,11 @@ Completed:
 - `Siguiente` is disabled when the current session is incomplete.
 - Preview is disabled until all sessions are complete.
 - The `Vista previa` button lives inside Step 3 of the wizard.
+- Preview has `Editar`, `Descargar`, and `Imprimir` buttons.
+- `Descargar` captures only `TreatmentLogPreview`, not the stepper/actions page chrome.
+- PDF download is image-based for demo purposes, not a professional coordinate-based PDF.
+- After download completes, the app returns to the wizard and shows a success notice.
+- After the browser print dialog closes, the app returns to the wizard and shows an informational notice.
 - `SessionProgress` exists and shows session chips with complete/pending/current states.
 - Clicking a session chip jumps to that session.
 - Sessions are now React state in `App`, not only derived from example data.
@@ -65,8 +70,7 @@ Not completed:
 
 - Real session data entry.
 - Print polish.
-- PDF export.
-- The `Descargar` button exists in PreviewPage but is currently disabled.
+- Professional `pdf-lib` export.
 - Real logo.
 
 ## Visual Layout Requirements
@@ -160,6 +164,7 @@ src/data/treatmentOptions.ts
 src/types/session.ts
 src/utils/createSessions.ts
 src/utils/dateRules.ts
+src/utils/downloadPreviewPdf.ts
 src/utils/sessionValidation.ts
 src/utils/sessionLayout.ts
 ```
@@ -171,7 +176,8 @@ Refine the session wizard inside `src/pages/WizardPage.tsx`.
 Suggested flow:
 
 1. Decide whether dropdowns are enough or if a future multiselect is preferred.
-2. Keep `PreviewPage` as the place where the final sheet is reviewed and printed.
+2. Keep `PreviewPage` as the place where the final sheet is reviewed, downloaded, and printed.
+3. Consider a future migration from image-based PDF download to `pdf-lib`.
 
 Start simple:
 

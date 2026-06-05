@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import type { Session } from "../types/session";
 import { LogoPlaceholder } from "./LogoPlaceholder";
 import { SessionGrid } from "./SessionGrid";
@@ -8,9 +9,16 @@ type TreatmentLogPreviewProps = {
   sessions: Session[];
 };
 
-export function TreatmentLogPreview({ sessions }: TreatmentLogPreviewProps) {
+export const TreatmentLogPreview = forwardRef<
+  HTMLElement,
+  TreatmentLogPreviewProps
+>(function TreatmentLogPreview({ sessions }, ref) {
   return (
-    <article className="mx-auto flex min-h-[1056px] w-full max-w-[816px] flex-col overflow-hidden bg-white shadow-xl print:min-h-screen print:max-w-none print:shadow-none">
+    <article
+      className="mx-auto flex min-h-[1056px] w-full max-w-[816px] flex-col overflow-hidden bg-white shadow-xl print:min-h-screen print:max-w-none print:shadow-none"
+      data-pdf-export="true"
+      ref={ref}
+    >
       <section className="flex flex-1 flex-col px-[76px] pb-6 pt-[82px]">
         <LogoPlaceholder />
 
@@ -25,4 +33,4 @@ export function TreatmentLogPreview({ sessions }: TreatmentLogPreviewProps) {
       <TreatmentLogFooter />
     </article>
   );
-}
+});

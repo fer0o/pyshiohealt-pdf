@@ -7,11 +7,16 @@ import { areAllSessionsComplete } from "./utils/sessionValidation";
 import type { Session } from "./types/session";
 
 type AppView = "wizard" | "preview";
+type AppNotice = {
+  message: string;
+  tone: "success" | "info";
+};
 
 function App() {
   const [view, setView] = useState<AppView>("wizard");
   const [currentSessionIndex, setCurrentSessionIndex] = useState(0);
   const [isSessionCountConfirmed, setIsSessionCountConfirmed] = useState(false);
+  const [notice, setNotice] = useState<AppNotice | null>(null);
   const [sessions, setSessions] = useState<Session[]>(() => createSessions(1));
 
   const updateSessionCount = (count: number) => {
@@ -36,8 +41,22 @@ function App() {
   if (view === "preview") {
     return (
       <PreviewPage
+        onDownloadComplete={() => {
+          setNotice({
+            message: "La bitácora se descargó correctamente.",
+            tone: "success",
+          });
+          setView("wizard");
+        }}
         sessions={sessions}
         onEditClick={() => {
+          setView("wizard");
+        }}
+        onPrintComplete={() => {
+          setNotice({
+            message: "Se cerró el diálogo de impresión de la bitácora.",
+            tone: "info",
+          });
           setView("wizard");
         }}
       />
@@ -48,7 +67,11 @@ function App() {
     <WizardPage
       currentSessionIndex={currentSessionIndex}
       isSessionCountConfirmed={isSessionCountConfirmed}
+      notice={notice}
       onCurrentSessionChange={updateSession}
+      onDismissNotice={() => {
+        setNotice(null);
+      }}
       onNextSession={() => {
         setCurrentSessionIndex((currentIndex) =>
           Math.min(currentIndex + 1, sessions.length - 1),
@@ -56,6 +79,7 @@ function App() {
       }}
       onPreviewClick={() => {
         if (canPreview) {
+          setNotice(null);
           setView("preview");
         }
       }}
