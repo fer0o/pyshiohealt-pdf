@@ -35,14 +35,29 @@ Completed:
 - The Vite starter UI was replaced with a treatment log preview.
 - The preview is separated into small components.
 - A session count control exists.
-- Session count input is text-based, accepts digits only, and clamps from `0` to `10`.
+- Session count starts at `1`.
+- Session count lives inside Step 1 of the wizard.
+- The session count is read-only by default.
+- Clicking `Editar` enables the input and shows `Confirmar` / `Cancelar`.
+- Session count input is text-based, accepts digits only, and clamps from `1` to `10`.
+- Step 2 is locked until Step 1 is confirmed.
+- Preview is disabled until Step 1 is confirmed.
 - Session layout is dynamic.
+- The app has two internal views:
+  - wizard/home view for capture
+  - preview view for the final printable sheet
+- A custom Tailwind stepper exists in `src/components/WizardStepper.tsx`.
+- `SessionEditor` exists and edits the current session date plus four treatment fields.
+- `SessionEditor` only appears after Step 1 is confirmed.
+- Session date input uses `min=2000-01-01` and `max=today`.
+- Date values are clamped in code through `src/utils/dateRules.ts`.
+- Sessions are now React state in `App`, not only derived from example data.
 
 Not completed:
 
-- Session wizard/editor.
+- Treatment dropdown/multiselect behavior.
+- Session completion validation.
 - Real session data entry.
-- Dropdown treatment selection.
 - Print polish.
 - PDF export.
 - Real logo.
@@ -121,6 +136,10 @@ The next phase should likely keep this same shape but make `sessions` editable f
 
 ```txt
 src/App.tsx
+src/pages/WizardPage.tsx
+src/pages/PreviewPage.tsx
+src/components/WizardStepper.tsx
+src/components/SessionEditor.tsx
 src/components/SessionBlock.tsx
 src/components/SessionColumn.tsx
 src/components/SessionCountControl.tsx
@@ -131,25 +150,20 @@ src/components/TreatmentLogPreview.tsx
 src/data/exampleSessions.ts
 src/types/session.ts
 src/utils/createSessions.ts
+src/utils/dateRules.ts
 src/utils/sessionLayout.ts
 ```
 
 ## Suggested Next Step
 
-Build the first version of the session wizard.
+Refine the session wizard inside `src/pages/WizardPage.tsx`.
 
 Suggested flow:
 
-1. Keep `SessionCountControl`.
-2. Store sessions in `App` state instead of deriving them only from example data.
-3. Create a `SessionEditor` component.
-4. Add current session index state.
-5. In `SessionEditor`, show:
-   - session number
-   - date input
-   - treatment/exercise fields
-   - `Anterior` and `Siguiente` buttons
-6. Update the preview live as each session changes.
+1. Decide if treatments should be free text, select dropdowns, or multiselect.
+2. Add validation for incomplete sessions.
+3. Consider marking Step 1 active while editing session count and Step 2 active during session capture.
+4. Keep `PreviewPage` as the place where the final sheet is reviewed and printed.
 
 Start simple:
 

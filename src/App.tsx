@@ -1,23 +1,73 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import "./App.css";
-import { SessionCountControl } from "./components/SessionCountControl";
-import { TreatmentLogPreview } from "./components/TreatmentLogPreview";
+import { PreviewPage } from "./pages/PreviewPage";
+import { WizardPage } from "./pages/WizardPage";
 import { clampSessionCount, createSessions } from "./utils/createSessions";
+import type { Session } from "./types/session";
+
+type AppView = "wizard" | "preview";
 
 function App() {
-  const [sessionCount, setSessionCount] = useState(10);
-  const sessions = useMemo(() => createSessions(sessionCount), [sessionCount]);
+  const [view, setView] = useState<AppView>("wizard");
+  const [currentSessionIndex, setCurrentSessionIndex] = useState(0);
+  const [isSessionCountConfirmed, setIsSessionCountConfirmed] = useState(false);
+  const [sessions, setSessions] = useState<Session[]>(() => createSessions(1));
 
-  return (
-    <main className="min-h-screen bg-neutral-200 px-4 py-8 text-[#555555]">
-      <SessionCountControl
-        sessionCount={sessionCount}
-        onSessionCountChange={(count) => {
-          setSessionCount(clampSessionCount(count));
+  const updateSessionCount = (count: number) => {
+    const nextCount = clampSessionCount(count);
+
+    setSessions((currentSessions) => createSessions(nextCount, currentSessions));
+    setCurrentSessionIndex((currentIndex) =>
+      Math.min(currentIndex, nextCount - 1),
+    );
+  };
+
+  const updateSession = (updatedSession: Session) => {
+    setSessions((currentSessions) =>
+      currentSessions.map((session) =>
+        session.number === updatedSession.number ? updatedSession : session,
+      ),
+    );
+  };
+
+  if (view === "preview") {
+    return (
+      <PreviewPage
+        sessions={sessions}
+        onEditClick={() => {
+          setView("wizard");
         }}
       />
-      <TreatmentLogPreview sessions={sessions} />
-    </main>
+    );
+  }
+
+  return (
+    <WizardPage
+      currentSessionIndex={currentSessionIndex}
+      isSessionCountConfirmed={isSessionCountConfirmed}
+      onCurrentSessionChange={updateSession}
+      onNextSession={() => {
+        setCurrentSessionIndex((currentIndex) =>
+          Math.min(currentIndex + 1, sessions.length - 1),
+        );
+      }}
+      onPreviewClick={() => {
+        if (isSessionCountConfirmed) {
+          setView("preview");
+        }
+      }}
+      onPreviousSession={() => {
+        setCurrentSessionIndex((currentIndex) => Math.max(currentIndex - 1, 0));
+      }}
+      onSessionCountConfirm={() => {
+        setIsSessionCountConfirmed(true);
+      }}
+      onSessionCountChange={(count) => {
+        updateSessionCount(count);
+      }}
+      sessionCount={sessions.length}
+      sessions={sessions}
+    />
   );
 }
 
