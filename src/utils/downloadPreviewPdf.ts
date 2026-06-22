@@ -16,6 +16,12 @@ export async function downloadPreviewPdf(element: HTMLElement) {
       if (clonedSheet) {
         clonedSheet.style.boxShadow = "none";
       }
+
+      clonedDocument
+        .querySelectorAll<HTMLElement>('[data-preview-only="true"]')
+        .forEach((element) => {
+          element.style.visibility = "hidden";
+        });
     },
   });
 

@@ -9,4 +9,8 @@
   body {
     background: #ffffff;
   }
+
+  [data-preview-only="true"] {
+    visibility: hidden !important;
+  }
 }
